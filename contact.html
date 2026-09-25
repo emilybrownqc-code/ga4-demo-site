@@ -22,6 +22,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; font-size: 1em; box-sizing: border-box; }
   textarea { min-height: 100px; resize: vertical; }
   button { margin-top: 24px; background: #2b6cb0; color: white; border: none; padding: 14px 28px; border-radius: 6px; font-weight: 600; font-size: 1em; cursor: pointer; }
+  button:disabled { opacity: 0.6; cursor: not-allowed; }
   footer { padding: 30px 40px; border-top: 1px solid #eee; color: #888; font-size: 0.9em; }
 </style>
 </head>
@@ -46,8 +47,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <h1>Get in touch</h1>
   <p class="subhead">Tell us a bit about your team and we'll follow up.</p>
 
-  <!-- Replace YOUR_FORM_ID with your actual Formspree endpoint -->
-  <form action="https://formspree.io/f/mzezakdw" method="POST">
+  <form id="contact-form" action="https://formspree.io/f/mzezakdw" method="POST">
     <label for="name">Name</label>
     <input type="text" id="name" name="name" required>
 
@@ -61,11 +61,40 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <textarea id="message" name="message"></textarea>
 
     <button type="submit">Send Message</button>
-
-    <input type="hidden" name="_next" value="<input type="hidden" name="_next" value="https://emilybrownqc-code.github.io/ga4-demo-site/thank-you.html">">
   </form>
 </div>
 
 <footer>&copy; 2026 Streamline Demo Site — built for portfolio purposes.</footer>
+
+<script>
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const data = new FormData(form);
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+
+  fetch(form.action, {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  }).then(function(response) {
+    if (response.ok) {
+      window.location.href = 'thank-you.html';
+    } else {
+      alert('Oops! There was a problem submitting the form.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Message';
+    }
+  }).catch(function() {
+    alert('Oops! There was a problem submitting the form.');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send Message';
+  });
+});
+</script>
+
 </body>
 </html>
